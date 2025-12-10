@@ -10,7 +10,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: List files at repo root (debug)
@@ -24,13 +24,24 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build solution
+      - name: Build solution (Release)
         run: msbuild SmartCampusDashboardFull/SmartCampusDashboard.sln /p:Configuration=Release /restore
 
-      - name: Upload build output
+      - name: Show build output structure (debug)
+        run: |
+          cd SmartCampusDashboardFull
+          dir
+          cd bin
+          dir
+          cd Release
+          dir
+          cd net48
+          dir
+
+      - name: Upload EXE and DLLs
         uses: actions/upload-artifact@v4
         with:
           name: SmartCampusDashboard-output
           path: |
-            SmartCampusDashboardFull/**/bin/Release/*.exe
-            SmartCampusDashboardFull/**/bin/Release/*.dll
+            SmartCampusDashboardFull/bin/Release/net48/*.exe
+            SmartCampusDashboardFull/bin/Release/net48/*.dll
