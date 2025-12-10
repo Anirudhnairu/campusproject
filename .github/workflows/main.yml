@@ -13,19 +13,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: List files at repo root (debug)
+        run: dir
+
+      - name: List files inside project folder (debug)
+        run: |
+          cd SmartCampusDashboardFull
+          dir
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Restore NuGet packages
-        run: nuget restore SmartCampusDashboard.sln
+      - name: Build solution
+        run: msbuild SmartCampusDashboardFull/SmartCampusDashboard.sln /p:Configuration=Release /restore
 
-      - name: Build project
-        run: msbuild SmartCampusDashboard.sln /p:Configuration=Release
-
-      - name: Upload EXE
+      - name: Upload build output
         uses: actions/upload-artifact@v4
         with:
-          name: SmartCampusDashboard-EXE
+          name: SmartCampusDashboard-output
           path: |
-            **/bin/Release/*.exe
-            **/bin/Release/*.dll
+            SmartCampusDashboardFull/**/bin/Release/*.exe
+            SmartCampusDashboardFull/**/bin/Release/*.dll
